@@ -1,5 +1,5 @@
 import { browser } from 'wxt/browser';
-import type { Card, Difficulty, LeetcodeDomain } from '@/shared/cards';
+import type { Card, Difficulty, CardDomain } from '@/shared/cards';
 import type { Grade, State as FsrsState } from 'ts-fsrs';
 import type { DailyStats, UpcomingReviewStats } from '@/services/stats';
 import type { Note } from '@/shared/notes';
@@ -66,7 +66,7 @@ export type MessageRequest =
       name: string;
       leetcodeId: string;
       difficulty: Difficulty;
-      domain: LeetcodeDomain;
+      domain: CardDomain;
     }
   | { type: typeof MessageType.GET_ALL_CARDS }
   | { type: typeof MessageType.REMOVE_CARD; slug: string }
@@ -79,7 +79,7 @@ export type MessageRequest =
       rating: Grade;
       leetcodeId: string;
       difficulty: Difficulty;
-      domain: LeetcodeDomain;
+      domain: CardDomain;
     }
   | { type: typeof MessageType.GET_REVIEW_QUEUE }
   | { type: typeof MessageType.GET_TODAY_STATS }

@@ -1,5 +1,5 @@
 import { FaArrowUpRightFromSquare } from 'react-icons/fa6';
-import { Difficulty, type Card } from '@/shared/cards';
+import { Difficulty, getCardProblemUrl, type Card } from '@/shared/cards';
 import { Rating } from 'ts-fsrs';
 import type { Grade } from 'ts-fsrs';
 import { Button } from 'react-aria-components';
@@ -40,32 +40,34 @@ export function ReviewCard({ card, onRate, isProcessing = false }: ReviewCardPro
   };
 
   return (
-    <div className="border border-current rounded-lg bg-secondary p-4 flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold text-secondary">#{card.leetcodeId}</span>
-        <span className={`text-xs px-2 py-1 rounded text-white ${difficultyColor}`}>{card.difficulty}</span>
+    <div className="border border-current rounded-lg bg-secondary px-3.5 py-3.5 flex flex-col gap-2.5">
+      <div className="flex items-center justify-between gap-2 min-w-0">
+        <span className="text-xs font-medium text-secondary truncate font-jetbrains-mono">#{card.leetcodeId}</span>
+        <span className={`text-[11px] leading-none px-2 py-1 rounded text-white shrink-0 ${difficultyColor}`}>
+          {card.difficulty}
+        </span>
       </div>
 
-      <div className="flex justify-center pb-3 -mt-1 text-center">
+      <div className="flex justify-center text-center px-1">
         <a
-          href={`https://${card.domain}/problems/${card.slug}/description/`}
+          href={getCardProblemUrl(card)}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-lg font-semibold text-primary group"
-          aria-label="LeetCode problem"
+          className="text-base font-semibold leading-snug text-primary group"
+          aria-label="NeetCode problem"
         >
           {card.name}
-          <FaArrowUpRightFromSquare className="inline ml-1.5 text-xs opacity-60 group-hover:opacity-100 transition-opacity" />
+          <FaArrowUpRightFromSquare className="inline ml-1.5 text-[10px] opacity-60 group-hover:opacity-100 transition-opacity align-baseline" />
         </a>
       </div>
 
-      <div className="flex gap-2 justify-center">
+      <div className="flex gap-1.5 justify-center pt-0.5">
         {ratingButtonConfigs.map(({ rating, labelKey, colorClass }) => (
           <Button
             key={labelKey}
             onPress={() => handleRating(rating)}
             isDisabled={isProcessing}
-            className={`w-20 py-1.5 rounded text-sm ${colorClass} text-white hover:opacity-90 ${bounceButton} disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`flex-1 max-w-[4.75rem] py-1.5 rounded text-xs font-semibold ${colorClass} text-white hover:opacity-90 ${bounceButton} disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {t.ratings[labelKey]}
           </Button>

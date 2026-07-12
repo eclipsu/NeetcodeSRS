@@ -3,8 +3,8 @@ import type { Translations } from './index';
 const hi: Translations = {
   // App branding
   app: {
-    name: 'LeetSRS',
-    namePart1: 'Leet',
+    name: 'NeetcodeSRS',
+    namePart1: 'Neetcode',
     namePart2: 'SRS',
   },
   // Navigation
@@ -176,7 +176,7 @@ const hi: Translations = {
     // GitHub Gist Sync section
     gistSync: {
       title: 'GitHub Gist सिंक',
-      gistDescription: 'LeetSRS बैकअप - स्पेस्ड रिपिटिशन डेटा',
+      gistDescription: 'NeetcodeSRS बैकअप - स्पेस्ड रिपिटिशन डेटा',
       description: 'GitHub Gists का यूज़ करके ब्राउज़रों में डेटा सिंक करें',
       // PAT field
       patLabel: 'पर्सनल एक्सेस टोकन (PAT)',
@@ -215,13 +215,16 @@ const hi: Translations = {
       title: 'अबाउट',
       feedbackMessage: 'फ़ीचर रिक्वेस्ट, बग रिपोर्ट और फ़ीडबैक के लिए GitHub पर issue खोलें!',
       reviewRequest: 'रिव्यू दें 🙏',
-      copyright: '© 2026 Matt Drake',
+      copyright: '© 2026 Rajeev Shrestha',
       github: 'GitHub',
+      website: 'Website',
     },
   },
   // Content script (LeetCode page integration)
   contentScript: {
     addToSrsNoRating: 'SRS में जोड़ें (बिना रेटिंग)',
+    rateAfterSubmit: 'यह कितना कठिन था?',
+    rateAfterSubmitHint: 'अगली रिव्यु शेड्यूल करने के लिए रेट करें',
   },
   // Formatting helpers (for interpolated strings)
   format: {

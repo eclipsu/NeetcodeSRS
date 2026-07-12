@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createButton, createLeetSrsButton } from '../button';
+import { createButton, createLeetSrsButton, createNeetcodeSrsButton } from '../button';
 import { LEETSRS_BUTTON_COLOR } from '../constants';
 
 // @vitest-environment happy-dom
@@ -55,7 +55,6 @@ describe('button utilities', () => {
 
   describe('createLeetSRSButton', () => {
     beforeEach(() => {
-      // Clear any existing dark class
       document.documentElement.classList.remove('dark');
     });
 
@@ -66,7 +65,6 @@ describe('button utilities', () => {
       expect(button.tagName).toBe('DIV');
       expect(button.className).toBe('relative flex');
 
-      // Check nested structure
       const innerWrapper = button.firstElementChild;
       expect(innerWrapper?.className).toBe(
         'relative flex overflow-hidden rounded bg-fill-tertiary dark:bg-fill-tertiary'
@@ -82,8 +80,8 @@ describe('button utilities', () => {
 
       const clickableDiv = button.querySelector('[data-state="closed"]');
       expect(clickableDiv).toBeTruthy();
-      expect(clickableDiv?.getAttribute('title')).toBe('LeetSRS');
-      expect(clickableDiv?.getAttribute('aria-label')).toBe('LeetSRS');
+      expect(clickableDiv?.getAttribute('title')).toBe('NeetcodeSRS');
+      expect(clickableDiv?.getAttribute('aria-label')).toBe('NeetcodeSRS');
       expect(clickableDiv?.classList.contains('flex')).toBe(true);
       expect(clickableDiv?.classList.contains('cursor-pointer')).toBe(true);
     });
@@ -108,7 +106,6 @@ describe('button utilities', () => {
       expect(svg?.getAttribute('width')).toBe('1em');
       expect(svg?.getAttribute('height')).toBe('1em');
 
-      // Check for the rotate icon path
       const paths = svg?.querySelectorAll('path');
       expect(paths?.length).toBeGreaterThan(0);
     });
@@ -124,17 +121,41 @@ describe('button utilities', () => {
     it('should use same color for light and dark modes', () => {
       const onClick = vi.fn();
 
-      // Test light mode
       document.documentElement.classList.remove('dark');
       const buttonLight = createLeetSrsButton(onClick);
       const clickableDivLight = buttonLight.querySelector('[data-state="closed"]') as HTMLElement;
       expect(clickableDivLight.style.color).toBe('#28c244');
 
-      // Test dark mode
       document.documentElement.classList.add('dark');
       const buttonDark = createLeetSrsButton(onClick);
       const clickableDivDark = buttonDark.querySelector('[data-state="closed"]') as HTMLElement;
       expect(clickableDivDark.style.color).toBe('#28c244');
+    });
+  });
+
+  describe('createNeetcodeSrsButton', () => {
+    it('should render a filled navbar-sized icon button', () => {
+      const onClick = vi.fn();
+      const wrapper = createNeetcodeSrsButton(onClick);
+      const button = wrapper.querySelector('button') as HTMLButtonElement;
+      const svg = button.querySelector('svg');
+      const path = svg?.querySelector('path');
+
+      expect(button).toBeTruthy();
+      expect(button.getAttribute('aria-label')).toBe('NeetcodeSRS');
+      expect(button.style.width).toBe('36px');
+      expect(button.style.height).toBe('36px');
+      expect(svg?.getAttribute('viewBox')).toBe('0 0 512 512');
+      expect(svg?.getAttribute('width')).toBe('18');
+      expect(path?.getAttribute('fill')).toBe('currentColor');
+    });
+
+    it('should invoke onClick when pressed', () => {
+      const onClick = vi.fn();
+      const wrapper = createNeetcodeSrsButton(onClick);
+      const button = wrapper.querySelector('button') as HTMLButtonElement;
+      button.click();
+      expect(onClick).toHaveBeenCalledTimes(1);
     });
   });
 });

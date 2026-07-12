@@ -6,7 +6,8 @@ import { useCardsQuery, usePauseCardMutation, useRemoveCardMutation } from '@/ho
 import { Button, TextField, Input, Label } from 'react-aria-components';
 import { State as FsrsState } from 'ts-fsrs';
 import type { Card } from '@/shared/cards';
-import { FaCirclePause, FaPlay, FaTrash, FaXmark, FaMagnifyingGlass } from 'react-icons/fa6';
+import { getCardProblemUrl } from '@/shared/cards';
+import { FaCirclePause, FaPlay, FaTrash, FaXmark, FaMagnifyingGlass, FaArrowUpRightFromSquare } from 'react-icons/fa6';
 import { bounceButton } from '@/shared/styles';
 import { useI18n } from '../../contexts/I18nContext';
 import type { Translations } from '@/shared/i18n';
@@ -58,12 +59,14 @@ interface CardHeaderProps {
 function CardHeader({ card, isExpanded, t }: CardHeaderProps) {
   return (
     <>
-      <div className="flex items-center gap-2">
-        {card.paused && <FaCirclePause className="text-warning text-base" title={t.cardsView.cardPausedTitle} />}
-        <span className="text-xs text-secondary">{t.format.leetcodeId(card.leetcodeId)}</span>
-        <span className={`text-sm ${card.paused ? 'opacity-60' : ''}`}>{card.name}</span>
+      <div className="flex items-center gap-2 min-w-0">
+        {card.paused && (
+          <FaCirclePause className="text-warning text-base shrink-0" title={t.cardsView.cardPausedTitle} />
+        )}
+        <span className="text-xs text-secondary shrink-0">{t.format.leetcodeId(card.leetcodeId)}</span>
+        <span className={`text-sm truncate ${card.paused ? 'opacity-60' : ''}`}>{card.name}</span>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         <span className={`text-xs ${getDifficultyColor(card.difficulty)}`}>{card.difficulty}</span>
         <span className={`text-xs text-secondary transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}>
           ▶
@@ -181,13 +184,25 @@ function CardItem({
 }: CardItemProps) {
   return (
     <div className="bg-secondary rounded-lg border border-current overflow-hidden">
-      <Button
-        className="w-full flex items-center justify-between p-3 hover:bg-tertiary transition-colors text-left"
-        onPress={onToggle}
-        aria-expanded={isExpanded}
-      >
-        <CardHeader card={card} isExpanded={isExpanded} t={t} />
-      </Button>
+      <div className="flex items-stretch">
+        <Button
+          className="flex-1 min-w-0 flex items-center justify-between p-3 hover:bg-tertiary transition-colors text-left"
+          onPress={onToggle}
+          aria-expanded={isExpanded}
+        >
+          <CardHeader card={card} isExpanded={isExpanded} t={t} />
+        </Button>
+        <a
+          href={getCardProblemUrl(card)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-2.5 flex items-center justify-center text-secondary hover:text-accent hover:bg-tertiary transition-colors border-l border-current shrink-0"
+          aria-label="Open on NeetCode"
+          title="Open on NeetCode"
+        >
+          <FaArrowUpRightFromSquare className="text-xs" />
+        </a>
+      </div>
       {isExpanded && (
         <CardStats
           card={card}

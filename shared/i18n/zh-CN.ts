@@ -3,8 +3,8 @@ import type { Translations } from './index';
 // Simplified Chinese translations
 const zhCN: Translations = {
   app: {
-    name: 'LeetSRS',
-    namePart1: 'Leet',
+    name: 'NeetcodeSRS',
+    namePart1: 'Neetcode',
     namePart2: 'SRS',
   },
 
@@ -176,7 +176,7 @@ const zhCN: Translations = {
 
     gistSync: {
       title: 'GitHub Gist 同步',
-      gistDescription: 'LeetSRS 备份 - 间隔重复数据',
+      gistDescription: 'NeetcodeSRS 备份 - 间隔重复数据',
       description: '通过 GitHub Gist 在不同浏览器间同步数据',
       patLabel: '个人访问令牌',
       patPlaceholder: 'ghp_xxxxxxxxxxxx',
@@ -210,13 +210,16 @@ const zhCN: Translations = {
       title: '关于',
       feedbackMessage: '欢迎在 GitHub 上提交功能请求、错误报告和反馈！',
       reviewRequest: '留下评价 🙏',
-      copyright: '© 2026 Matt Drake',
+      copyright: '© 2026 Rajeev Shrestha',
       github: 'GitHub',
+      website: '网站',
     },
   },
 
   contentScript: {
     addToSrsNoRating: '添加到 SRS（无评分）',
+    rateAfterSubmit: '这题有多难？',
+    rateAfterSubmitHint: '评分以安排下次复习',
   },
 
   format: {

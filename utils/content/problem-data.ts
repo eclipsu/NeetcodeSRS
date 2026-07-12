@@ -1,5 +1,6 @@
 import type { ProblemData } from '@/shared/problem-data';
-import { getCurrentDomain, getGraphQLUrl } from './domain';
+import { getCurrentDomain, getGraphQLUrl, getNeetcodeMetadataUrl, isNeetcodeDomain } from './domain';
+
 // Cache to avoid redundant requests
 let cachedData: { slug: string; data: ProblemData } | null = null;
 
@@ -10,7 +11,6 @@ export function clearCache(): void {
 
 export async function extractProblemData(): Promise<ProblemData | null> {
   try {
-    // Get the current slug from the URL or router
     const currentSlug = getCurrentTitleSlug();
     if (!currentSlug) {
       console.log('Could not extract title slug');
@@ -18,14 +18,15 @@ export async function extractProblemData(): Promise<ProblemData | null> {
     }
     const titleSlug = currentSlug;
 
-    // Check cache first
     if (cachedData && cachedData.slug === titleSlug) {
       return cachedData.data;
     }
 
-    const problemData = await fetchProblemDataFromPage(titleSlug);
+    const problemData = isNeetcodeDomain()
+      ? await fetchNeetcodeProblemData(titleSlug)
+      : await fetchLeetcodeProblemData(titleSlug);
+
     if (problemData) {
-      // Update cache
       cachedData = { slug: titleSlug, data: problemData };
       return problemData;
     }
@@ -39,21 +40,67 @@ export async function extractProblemData(): Promise<ProblemData | null> {
 }
 
 function getCurrentTitleSlug(): string | null {
-  // Try window.next.router first (most reliable after navigation)
+  // LeetCode: window.next.router is most reliable after SPA navigation
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const nextRouter = (window as any).next?.router;
   if (nextRouter?.query?.slug) {
     return nextRouter.query.slug;
   }
 
-  // Fallback to URL parsing
+  // NeetCode + LeetCode URL fallback: /problems/:slug/...
   const pathMatch = window.location.pathname.match(/\/problems\/([^/]+)/);
   return pathMatch ? pathMatch[1] : null;
 }
 
-async function fetchProblemDataFromPage(titleSlug: string): Promise<ProblemData | null> {
+async function fetchNeetcodeProblemData(problemId: string): Promise<ProblemData | null> {
   try {
-    // LeetCode's GraphQL endpoint
+    const response = await fetch(getNeetcodeMetadataUrl(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: { problemId },
+      }),
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const payload = await response.json();
+    const problem = payload?.data;
+    if (!problem?.id || !problem?.name || !problem?.difficulty) {
+      return null;
+    }
+
+    const difficulty = normalizeDifficulty(problem.difficulty);
+    if (!difficulty) {
+      return null;
+    }
+
+    return {
+      difficulty,
+      title: problem.name,
+      titleSlug: problem.id,
+      questionFrontendId: problem.id,
+    };
+  } catch (error) {
+    console.error('Error fetching NeetCode problem data:', error);
+    return null;
+  }
+}
+
+function normalizeDifficulty(value: string): ProblemData['difficulty'] | null {
+  const normalized = value.trim().toLowerCase();
+  if (normalized === 'easy') return 'Easy';
+  if (normalized === 'medium') return 'Medium';
+  if (normalized === 'hard') return 'Hard';
+  return null;
+}
+
+async function fetchLeetcodeProblemData(titleSlug: string): Promise<ProblemData | null> {
+  try {
     const graphqlQuery = {
       query: `
         query questionData($titleSlug: String!) {
@@ -72,7 +119,6 @@ async function fetchProblemDataFromPage(titleSlug: string): Promise<ProblemData 
       },
     };
 
-    // Get CSRF token from cookies
     const csrfToken = document.cookie
       .split('; ')
       .find((row) => row.startsWith('csrftoken='))
@@ -109,7 +155,7 @@ async function fetchProblemDataFromPage(titleSlug: string): Promise<ProblemData 
 
     return null;
   } catch (error) {
-    console.error('Error fetching problem data:', error);
+    console.error('Error fetching LeetCode problem data:', error);
     return null;
   }
 }

@@ -1,10 +1,10 @@
 {
-  "name": "leetsrs",
-  "description": "A spaced repetition extension for LeetCode problems",
+  "name": "neetcodesrs",
+  "description": "A spaced repetition extension for NeetCode problems",
   "private": true,
   "version": "0.4.0",
   "license": "MIT",
-  "author": "Matt Drake",
+  "author": "Rajeev Shrestha",
   "type": "module",
   "scripts": {
     "dev": "wxt",

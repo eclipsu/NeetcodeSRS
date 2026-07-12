@@ -2,8 +2,8 @@
 const en = {
   // App branding
   app: {
-    name: 'LeetSRS',
-    namePart1: 'Leet',
+    name: 'NeetcodeSRS',
+    namePart1: 'Neetcode',
     namePart2: 'SRS',
   },
 
@@ -196,7 +196,7 @@ const en = {
     // GitHub Gist Sync section
     gistSync: {
       title: 'GitHub Gist Sync',
-      gistDescription: 'LeetSRS Backup - Spaced Repetition Data',
+      gistDescription: 'NeetcodeSRS Backup - Spaced Repetition Data',
       description: 'Sync your data across browsers using GitHub Gists',
       // PAT field
       patLabel: 'Personal Access Token',
@@ -236,14 +236,17 @@ const en = {
       title: 'About',
       feedbackMessage: 'Feel free to open issues for feature requests, bug reports, and feedback on GitHub!',
       reviewRequest: 'Leave a review 🙏',
-      copyright: '© 2026 Matt Drake',
+      copyright: '© 2026 Rajeev Shrestha',
       github: 'GitHub',
+      website: 'Website',
     },
   },
 
-  // Content script (LeetCode page integration)
+  // Content script (problem page integration)
   contentScript: {
     addToSrsNoRating: 'Add to SRS (no rating)',
+    rateAfterSubmit: 'How hard was this?',
+    rateAfterSubmitHint: 'Rate to schedule your next review',
   },
 
   // Formatting helpers (for interpolated strings)

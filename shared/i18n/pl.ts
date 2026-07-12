@@ -4,8 +4,8 @@ import type { Translations } from './index';
 const pl: Translations = {
   // App branding
   app: {
-    name: 'LeetSRS',
-    namePart1: 'Leet',
+    name: 'NeetcodeSRS',
+    namePart1: 'Neetcode',
     namePart2: 'SRS',
   },
 
@@ -198,7 +198,7 @@ const pl: Translations = {
     // GitHub Gist Sync section
     gistSync: {
       title: 'Synchronizacja przez GitHub Gist',
-      gistDescription: 'Kopia zapasowa LeetSRS - Dane powtórek rozłożonych w czasie',
+      gistDescription: 'Kopia zapasowa NeetcodeSRS - Dane powtórek rozłożonych w czasie',
       description: 'Synchronizuj dane między przeglądarkami za pomocą GitHub Gists',
       // PAT field
       patLabel: 'Osobisty token dostępu',
@@ -238,14 +238,17 @@ const pl: Translations = {
       title: 'O aplikacji',
       feedbackMessage: 'Zgłaszaj propozycje funkcji, błędy i uwagi na GitHubie!',
       reviewRequest: 'Zostaw recenzję 🙏',
-      copyright: '© 2026 Matt Drake',
+      copyright: '© 2026 Rajeev Shrestha',
       github: 'GitHub',
+      website: 'Strona',
     },
   },
 
   // Content script (LeetCode page integration)
   contentScript: {
     addToSrsNoRating: 'Dodaj do SRS (bez oceny)',
+    rateAfterSubmit: 'Jak trudne to było?',
+    rateAfterSubmitHint: 'Oceń, aby zaplanować kolejną powtórkę',
   },
 
   // Formatting helpers (for interpolated strings)

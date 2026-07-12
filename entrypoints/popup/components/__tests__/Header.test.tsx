@@ -7,11 +7,12 @@ import { Header } from '../Header';
 
 describe('Header', () => {
   it('renders the provided title', () => {
-    render(<Header title="LeetSRS" />);
+    render(<Header title="NeetcodeSRS" />);
 
-    const title = screen.getByRole('heading', { name: 'Leet SRS', level: 1 });
+    const title = screen.getByRole('heading', { name: 'Neetcode SRS', level: 1 });
     expect(title).toBeInTheDocument();
-    expect(title).toHaveClass('text-xl', 'font-bold', 'text-primary');
+    expect(title).toHaveClass('text-lg', 'font-bold', 'text-primary');
+    expect(screen.getByText('SRS')).toHaveClass('text-rating-easy');
   });
 
   it('renders children when provided', () => {

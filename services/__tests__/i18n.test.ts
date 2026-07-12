@@ -19,7 +19,7 @@ describe('service i18n', () => {
     it('should return translations object', () => {
       const t = getServiceTranslations();
       expect(t).toBeDefined();
-      expect(t.app.name).toBe('LeetSRS');
+      expect(t.app.name).toBe('NeetcodeSRS');
     });
 
     it('should have all required translation keys', () => {

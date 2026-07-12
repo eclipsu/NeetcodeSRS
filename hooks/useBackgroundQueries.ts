@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { sendMessage, MessageType } from '@/shared/messages';
 import type { Grade } from 'ts-fsrs';
-import type { Difficulty, Card, LeetcodeDomain } from '@/shared/cards';
+import type { Difficulty, Card, CardDomain } from '@/shared/cards';
 import type { Theme, Language } from '@/shared/settings';
 import type { GistSyncConfig } from '@/shared/gist-sync';
 
@@ -124,7 +124,7 @@ export function useAddCardMutation() {
       name: string;
       leetcodeId: string;
       difficulty: Difficulty;
-      domain: LeetcodeDomain;
+      domain: CardDomain;
     }) => sendMessage({ type: MessageType.ADD_CARD, slug, name, leetcodeId, difficulty, domain }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.all });
@@ -157,7 +157,7 @@ export function useRateCardMutation() {
       rating: Grade;
       leetcodeId: string;
       difficulty: Difficulty;
-      domain: LeetcodeDomain;
+      domain: CardDomain;
     }
   >({
     mutationFn: ({ slug, name, rating, leetcodeId, difficulty, domain }) =>

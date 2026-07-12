@@ -13,7 +13,7 @@ export default defineConfig({
     description: '__MSG_extDescription__',
     default_locale: 'en',
     permissions: ['storage', 'alarms'],
-    host_permissions: ['*://*.leetcode.com/*'],
+    host_permissions: ['*://*.leetcode.com/*', '*://neetcode.io/*', '*://*.neetcode.io/*'],
     optional_host_permissions: ['*://*.leetcode.cn/*'],
   },
   vite: () => ({

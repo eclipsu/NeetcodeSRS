@@ -1,9 +1,12 @@
 import {
   createLeetSrsButton,
+  createNeetcodeSrsButton,
   extractProblemData,
   getCurrentDomain,
+  isNeetcodeDomain,
   RatingMenu,
   setupLeetcodeAutoReset,
+  setupNeetcodeSubmitWatcher,
   Tooltip,
 } from '@/utils/content';
 import { getServiceTranslations } from '@/services/i18n';
@@ -11,15 +14,23 @@ import { sendMessage, MessageType } from '@/shared/messages';
 import type { Grade } from 'ts-fsrs';
 
 export default defineContentScript({
-  matches: ['*://*.leetcode.com/*', '*://*.leetcode.cn/*'],
+  matches: ['*://*.leetcode.com/*', '*://*.leetcode.cn/*', '*://neetcode.io/*', '*://*.neetcode.io/*'],
   runAt: 'document_idle',
   async main() {
-    // Wake up service worker so it's ready when user interacts
     try {
       await sendMessage({ type: MessageType.PING });
     } catch (error) {
       console.error('Failed to ping service worker:', error);
     }
+
+    if (isNeetcodeDomain()) {
+      setupNeetcodeSrsButton();
+      setupNeetcodeSubmitWatcher({
+        handlers: createCardActionHandlers(),
+      });
+      return;
+    }
+
     setupLeetSrsButton();
     setupLeetcodeAutoReset();
   },
@@ -42,60 +53,61 @@ async function withProblemData<T>(
   }
 }
 
+function createCardActionHandlers() {
+  return {
+    onRate: async (rating: number, label: string) => {
+      await withProblemData(async (problemData) => {
+        const result = await sendMessage({
+          type: MessageType.RATE_CARD,
+          slug: problemData.titleSlug,
+          name: problemData.title,
+          rating: rating as Grade,
+          leetcodeId: problemData.questionFrontendId,
+          difficulty: problemData.difficulty,
+          domain: getCurrentDomain(),
+        });
+        console.log(`${label} - Card rated:`, result);
+        return result;
+      });
+    },
+    onAddWithoutRating: async () => {
+      await withProblemData(async (problemData) => {
+        const result = await sendMessage({
+          type: MessageType.ADD_CARD,
+          slug: problemData.titleSlug,
+          name: problemData.title,
+          leetcodeId: problemData.questionFrontendId,
+          difficulty: problemData.difficulty,
+          domain: getCurrentDomain(),
+        });
+        console.log('Add without rating - Card added:', result);
+        return result;
+      });
+    },
+  };
+}
+
+function createRatingHandlers(buttonWrapper: HTMLElement, menuPosition: 'top' | 'bottom') {
+  const handlers = createCardActionHandlers();
+  return new RatingMenu(buttonWrapper, handlers.onRate, handlers.onAddWithoutRating, { position: menuPosition });
+}
+
 function setupLeetSrsButton() {
-  const BUTTON_ID = 'leetsrs-button-wrapper';
+  const BUTTON_ID = 'neetcodesrs-button-wrapper';
   const tooltip = new Tooltip();
 
   function insertButton(buttonsContainer: Element) {
-    // Don't insert if already present
     if (buttonsContainer.querySelector(`#${BUTTON_ID}`)) {
       return;
     }
 
     let ratingMenu: RatingMenu | null = null;
-
     const buttonWrapper = createLeetSrsButton(() => {
-      if (ratingMenu) {
-        ratingMenu.toggle();
-      }
+      ratingMenu?.toggle();
     });
     buttonWrapper.id = BUTTON_ID;
+    ratingMenu = createRatingHandlers(buttonWrapper, 'bottom');
 
-    // Setup rating menu
-    ratingMenu = new RatingMenu(
-      buttonWrapper,
-      async (rating, label) => {
-        await withProblemData(async (problemData) => {
-          const result = await sendMessage({
-            type: MessageType.RATE_CARD,
-            slug: problemData.titleSlug,
-            name: problemData.title,
-            rating: rating as Grade,
-            leetcodeId: problemData.questionFrontendId,
-            difficulty: problemData.difficulty,
-            domain: getCurrentDomain(),
-          });
-          console.log(`${label} - Card rated:`, result);
-          return result;
-        });
-      },
-      async () => {
-        await withProblemData(async (problemData) => {
-          const result = await sendMessage({
-            type: MessageType.ADD_CARD,
-            slug: problemData.titleSlug,
-            name: problemData.title,
-            leetcodeId: problemData.questionFrontendId,
-            difficulty: problemData.difficulty,
-            domain: getCurrentDomain(),
-          });
-          console.log('Add without rating - Card added:', result);
-          return result;
-        });
-      }
-    );
-
-    // Setup tooltip
     const t = getServiceTranslations();
     const clickableDiv = buttonWrapper.querySelector('[data-state="closed"]') as HTMLElement;
     if (clickableDiv) {
@@ -108,13 +120,12 @@ function setupLeetSrsButton() {
       });
     }
 
-    // Insert before the last button group (the notes button)
     const lastButtonGroup = buttonsContainer.lastElementChild;
 
     try {
       buttonsContainer.insertBefore(buttonWrapper, lastButtonGroup);
     } catch (error) {
-      console.error('Error adding LeetSRS button:', error);
+      console.error('Error adding NeetcodeSRS button:', error);
     }
   }
 
@@ -126,7 +137,55 @@ function setupLeetSrsButton() {
   };
   tryInsertButton();
 
-  // Use MutationObserver to handle SPA navigation and React re-renders.
+  const observer = new MutationObserver(tryInsertButton);
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+}
+
+function setupNeetcodeSrsButton() {
+  const BUTTON_ID = 'neetcodesrs-button-wrapper';
+
+  function insertButton(navbarRight: Element) {
+    if (document.querySelector(`#${BUTTON_ID}`)) {
+      return;
+    }
+
+    // Only inject on problem pages
+    if (!window.location.pathname.includes('/problems/')) {
+      return;
+    }
+
+    let ratingMenu: RatingMenu | null = null;
+    const buttonWrapper = createNeetcodeSrsButton(() => {
+      ratingMenu?.toggle();
+    });
+    buttonWrapper.id = BUTTON_ID;
+    ratingMenu = createRatingHandlers(buttonWrapper, 'bottom');
+
+    const themeBtn = navbarRight.querySelector('app-theme-btn') ?? navbarRight.querySelector('#theme-btn');
+    try {
+      if (themeBtn) {
+        navbarRight.insertBefore(buttonWrapper, themeBtn);
+      } else {
+        navbarRight.prepend(buttonWrapper);
+      }
+    } catch (error) {
+      console.error('Error adding NeetcodeSRS button:', error);
+    }
+  }
+
+  const tryInsertButton = () => {
+    const navbar = document.querySelector('.social-navbar.my-navbar');
+    const rightSide = navbar?.children[1];
+    if (rightSide) {
+      insertButton(rightSide);
+    }
+  };
+
+  tryInsertButton();
+
   const observer = new MutationObserver(tryInsertButton);
   observer.observe(document.body, {
     childList: true,

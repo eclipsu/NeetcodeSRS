@@ -68,12 +68,23 @@ describe('ReviewCard', () => {
       expect(hardElements[0]).toHaveClass('bg-difficulty-hard');
     });
 
-    it('should render the external link to LeetCode problem', () => {
+    it('should render the external link to NeetCode problem', () => {
       renderWithProviders();
-      const link = screen.getByRole('link', { name: /LeetCode/i });
-      expect(link).toHaveAttribute('href', 'https://leetcode.com/problems/two-sum/description/');
+      const link = screen.getByRole('link', { name: /NeetCode/i });
+      expect(link).toHaveAttribute('href', 'https://neetcode.io/problems/two-sum');
       expect(link).toHaveAttribute('target', '_blank');
       expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
+    it('should open NeetCode even when card domain is leetcode.com', () => {
+      renderWithProviders({
+        ...mockCard,
+        slug: 'two-integer-sum',
+        leetcodeId: 'two-integer-sum',
+        domain: 'leetcode.com',
+      });
+      const link = screen.getByRole('link', { name: /NeetCode/i });
+      expect(link).toHaveAttribute('href', 'https://neetcode.io/problems/two-integer-sum');
     });
 
     it('should render all four rating buttons', () => {
@@ -165,7 +176,8 @@ describe('ReviewCard', () => {
       const buttons = screen.getAllByRole('button');
 
       buttons.forEach((button) => {
-        expect(button).toHaveClass('w-20');
+        expect(button).toHaveClass('flex-1');
+        expect(button).toHaveClass('max-w-[4.75rem]');
       });
     });
   });
@@ -188,8 +200,8 @@ describe('ReviewCard', () => {
       };
       renderWithProviders(specialCard);
 
-      const link = screen.getByRole('link', { name: /LeetCode/i });
-      expect(link).toHaveAttribute('href', 'https://leetcode.com/problems/problem-with-special_chars-123/description/');
+      const link = screen.getByRole('link', { name: /NeetCode/i });
+      expect(link).toHaveAttribute('href', 'https://neetcode.io/problems/problem-with-special_chars-123');
     });
   });
 
@@ -205,7 +217,7 @@ describe('ReviewCard', () => {
 
     it('should have accessible link with proper attributes', () => {
       renderWithProviders();
-      const link = screen.getByRole('link', { name: /LeetCode/i });
+      const link = screen.getByRole('link', { name: /NeetCode/i });
 
       expect(link).toHaveAttribute('target', '_blank');
       expect(link).toHaveAttribute('rel', 'noopener noreferrer');

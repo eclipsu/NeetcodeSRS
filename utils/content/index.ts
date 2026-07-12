@@ -2,7 +2,11 @@ export * from './auto-reset';
 export * from './button';
 export * from './constants';
 export * from './domain';
+export * from './neetcode-submit-watcher';
 export * from './problem-data';
 export * from './rating-menu';
+export * from './submit-rating-prompt';
 export * from './theme';
 export * from './tooltip';
+
+export { isNeetcodeDomain } from './domain';

@@ -1,30 +1,8 @@
-# LeetSRS
+# NeetcodeSRS
 
-<div align="center">
-<img src="assets/branding/LeetSRS_card%20large.png" alt="LeetSRS Logo" />
-</div>
+NeetcodeSRS is a Chrome extension that adds spaced repetition to [NeetCode](https://neetcode.io) problem practice. It also works on LeetCode.
 
-<br/>
-
-LeetSRS is a [Chrome extension](https://chromewebstore.google.com/detail/odgfcigkohoimpeeooifjdglncggkgko?utm_source=item-share-cb) that adds spaced repetition to LeetCode problem practice.
-
-## Screenshots
-
-### In Extension
-
-<div align="center">
-<img src="assets/screenshots/mainScreen.png" width="30%" alt="Main Screen" />
-&nbsp;&nbsp;
-<img src="assets/screenshots/cardsScreen.png" width="30%" alt="Cards Screen" />
-&nbsp;&nbsp;
-<img src="assets/screenshots/statsScreen.png" width="30%" alt="Stats Screen" />
-</div>
-
-### Works directly on leetcode.com
-
-<div align="center">
-<img src="assets/screenshots/leetcodeScreencap.png" width="90%" alt="LeetCode Integration" />
-</div>
+**Author:** [Rajeev Shrestha](https://shrestharajeev.com.np/) · [GitHub](https://github.com/eclipsu/NeetcodeSRS)
 
 ## Features
 
@@ -36,7 +14,8 @@ LeetSRS is a [Chrome extension](https://chromewebstore.google.com/detail/odgfcig
 
 - Daily review queue with optimized problem ordering
 - View statistics and streaks
-- Works directly on leetcode.com
+- Works directly on **neetcode.io** problem pages
+- Also works on leetcode.com
 - Easily rate after solving problems, or add to review later
 - Customizable daily new card limits
 - Configure a day start offset (0-23 hours past midnight) for when a new review day begins
@@ -51,20 +30,18 @@ LeetSRS is a [Chrome extension](https://chromewebstore.google.com/detail/odgfcig
 
 - Dark/light theme support
 
-## Open Source
-
-LeetSRS is open source and accepts contributions.
-
 ## Installation
 
-1. Download the latest release from the [Chrome Web Store](https://chromewebstore.google.com/detail/odgfcigkohoimpeeooifjdglncggkgko?utm_source=item-share-cb)
-2. Or build from source and load as an unpacked extension
+1. Build from source and load as an unpacked extension:
+
+```bash
+npm install
+npm run build
+```
+
+Then open `chrome://extensions`, enable Developer mode, and load the `.output/chrome-mv3` folder.
 
 ### Setting Up GitHub Gist Sync (Optional)
-
-<div align="center">
-<img src="assets/screenshots/githubGistSyncScreen.png" width="30%" alt="GitHub Gist Sync settings screen" />
-</div>
 
 1. **Create a GitHub Personal Access Token** with the `gist` scope
 2. **Create a Gist** using the "Create New Gist" button in Settings, or manually on GitHub
@@ -73,3 +50,5 @@ LeetSRS is open source and accepts contributions.
 ## License
 
 MIT
+
+Forked from [LeetSRS](https://github.com/mattcdrake/LeetSRS) by Matt Drake.

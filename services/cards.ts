@@ -10,7 +10,7 @@ import { STORAGE_KEYS } from './storage-keys';
 import { storage } from '#imports';
 import { updateStats, getTodayStats } from './stats';
 import { deleteNote } from './notes';
-import { type Card, type Difficulty, type LeetcodeDomain } from '@/shared/cards';
+import { type Card, type CardDomain, type Difficulty } from '@/shared/cards';
 import { getMaxNewCardsPerDay, getDayStartHour } from './settings';
 const params = generatorParameters({ maximum_interval: 1000 });
 const fsrs = new FSRS(params);
@@ -67,13 +67,7 @@ export function deserializeCard(stored: StoredCard): Card {
   };
 }
 
-function createCard(
-  slug: string,
-  name: string,
-  leetcodeId: string,
-  difficulty: Difficulty,
-  domain: LeetcodeDomain
-): Card {
+function createCard(slug: string, name: string, leetcodeId: string, difficulty: Difficulty, domain: CardDomain): Card {
   return {
     id: crypto.randomUUID(),
     slug,
@@ -92,7 +86,7 @@ export async function addCard(
   name: string,
   leetcodeId: string,
   difficulty: Difficulty,
-  domain: LeetcodeDomain
+  domain: CardDomain
 ): Promise<Card> {
   const cards = await getCards();
   if (slug in cards) {
@@ -166,7 +160,7 @@ export async function rateCard(
   rating: Grade,
   leetcodeId: string,
   difficulty: Difficulty,
-  domain: LeetcodeDomain
+  domain: CardDomain
 ): Promise<{ card: Card; shouldRequeue: boolean }> {
   const cards = await getCards();
 

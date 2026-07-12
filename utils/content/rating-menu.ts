@@ -2,6 +2,7 @@ import { RATING_BUTTON_CONFIGS, THEME_COLORS } from './constants';
 import { getRatingColor, isDarkMode } from './theme';
 import { createButton } from './button';
 import { getServiceTranslations } from '@/services/i18n';
+import { CONTENT_UI_BASE, CONTENT_UI_BUTTON_RESET } from './content-ui-styles';
 
 export type RatingCallback = (rating: number, label: string) => void;
 type RatingMenuPosition = 'top' | 'bottom';
@@ -48,47 +49,49 @@ export class RatingMenu {
       this.position === 'top' ? 'bottom: 100%; margin-bottom: 8px;' : 'top: 100%; margin-top: 8px;';
 
     this.element.style.cssText = `
+      ${CONTENT_UI_BASE}
       position: absolute;
       right: 0;
       ${positionStyles}
-      min-width: 160px;
+      min-width: 188px;
       background-color: ${colors.bgSecondary};
-      border: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.15)'};
-      border-radius: 8px;
-      padding: 12px;
+      border: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)'};
+      border-radius: 10px;
+      padding: 10px;
       box-shadow: ${
         isDark
           ? '0 8px 16px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3)'
-          : '0 8px 16px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1)'
+          : '0 8px 16px rgba(0, 0, 0, 0.14), 0 4px 8px rgba(0, 0, 0, 0.08)'
       };
-      z-index: 50;
+      z-index: 2147483645;
     `;
 
-    // Create rating buttons container
     const ratingButtonsContainer = document.createElement('div');
     ratingButtonsContainer.style.cssText = `
       display: flex;
-      gap: 4px;
-      margin-bottom: 8px;
+      gap: 5px;
+      margin: 0 0 8px;
     `;
 
-    // Create rating buttons
     RATING_BUTTON_CONFIGS.forEach(({ rating, labelKey, colorKey }) => {
       const { bg, hover } = getRatingColor(colorKey);
       const label = t.ratings[labelKey];
 
       const button = createButton({
         style: `
-          width: 64px;
-          padding: 8px 8px;
-          border-radius: 4px;
+          ${CONTENT_UI_BUTTON_RESET}
+          flex: 1;
+          min-width: 0;
+          padding: 0 4px;
+          border-radius: 6px;
           background-color: ${bg};
-          color: white;
-          font-size: 13px;
+          color: #fff;
+          font-size: 12px;
+          font-weight: 600;
           border: none;
           cursor: pointer;
-          transition: background-color 0.2s;
-          height: 32px;
+          transition: background-color 0.15s;
+          height: 30px;
         `,
         onClick: () => {
           this.onRate(rating, label);
@@ -109,16 +112,11 @@ export class RatingMenu {
     });
 
     this.element.appendChild(ratingButtonsContainer);
+    this.element.appendChild(this.createAddWithoutRatingButton());
 
-    // Add "Add without rating" button
-    const addButton = this.createAddWithoutRatingButton();
-    this.element.appendChild(addButton);
-
-    // Add menu to container
     this.container.style.position = 'relative';
     this.container.appendChild(this.element);
 
-    // Setup close on outside click
     setTimeout(() => {
       document.addEventListener('click', this.handleOutsideClick);
     }, 0);
@@ -134,19 +132,18 @@ export class RatingMenu {
 
     const button = createButton({
       style: `
+        ${CONTENT_UI_BUTTON_RESET}
         width: 100%;
-        padding: 6px 12px;
-        border-radius: 4px;
+        padding: 0 10px;
+        border-radius: 6px;
         background-color: ${bgColor};
         color: ${textColor};
-        font-size: 13px;
+        font-size: 12px;
+        font-weight: 500;
         border: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
         cursor: pointer;
-        transition: all 0.2s;
-        display: block;
-        text-decoration: none;
-        height: 32px;
-        line-height: 20px;
+        transition: background-color 0.15s;
+        height: 30px;
       `,
       onClick: () => {
         this.onAddWithoutRating();
@@ -154,15 +151,13 @@ export class RatingMenu {
       },
     });
 
-    button.innerHTML = `<span style="filter: grayscale(1) brightness(${isDark ? '2' : '0.3'});">➕</span> ${t.contentScript.addToSrsNoRating}`;
+    button.textContent = t.contentScript.addToSrsNoRating;
 
     button.addEventListener('mouseenter', () => {
       button.style.backgroundColor = hoverBgColor;
-      button.style.textDecoration = 'underline';
     });
     button.addEventListener('mouseleave', () => {
       button.style.backgroundColor = bgColor;
-      button.style.textDecoration = 'none';
     });
 
     return button;

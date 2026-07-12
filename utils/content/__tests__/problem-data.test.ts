@@ -130,4 +130,36 @@ describe('extractProblemData', () => {
     const result = await extractProblemData();
     expect(result).toBeNull();
   });
+
+  it('should fetch NeetCode problem data successfully', async () => {
+    Object.defineProperty(window, 'location', {
+      value: { pathname: '/problems/two-integer-sum/question', hostname: 'neetcode.io' },
+      writable: true,
+    });
+
+    vi.mocked(global.fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: 'two-integer-sum',
+          name: 'Two Sum',
+          difficulty: 'Easy',
+        },
+      }),
+    } as Response);
+
+    const result = await extractProblemData();
+    expect(result).toEqual({
+      difficulty: 'Easy',
+      title: 'Two Sum',
+      titleSlug: 'two-integer-sum',
+      questionFrontendId: 'two-integer-sum',
+    });
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://neetcode.io/api/getProblemMetadataFunctionHttp',
+      expect.objectContaining({
+        method: 'POST',
+      })
+    );
+  });
 });

@@ -183,7 +183,7 @@ export function GistSyncSection() {
           <div className="text-xs text-tertiary">
             {t.settings.gistSync.patHelpText}{' '}
             <a
-              href="https://github.com/settings/tokens/new?scopes=gist&description=LeetSRS"
+              href="https://github.com/settings/tokens/new?scopes=gist&description=NeetcodeSRS"
               target="_blank"
               rel="noopener noreferrer"
               className="text-accent hover:underline"
