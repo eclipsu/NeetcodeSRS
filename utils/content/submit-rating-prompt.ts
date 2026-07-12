@@ -9,21 +9,45 @@ export type SubmitRatingHandlers = {
   onAddWithoutRating: () => void | Promise<void>;
 };
 
+export type SubmitRatingPromptOptions = {
+  /** Anchor the prompt below this element (e.g. LeetCode Submit button). */
+  anchor?: Element | null;
+  /** Preferred placement relative to the anchor. Defaults to below. */
+  placement?: 'below' | 'above';
+};
+
 const PROMPT_ID = 'neetcodesrs-submit-rating-prompt';
+const PROMPT_WIDTH = 300;
+const VIEWPORT_GAP = 12;
 
 export function hideSubmitRatingPrompt(): void {
   document.getElementById(PROMPT_ID)?.remove();
+  window.removeEventListener('resize', repositionActivePrompt);
+  window.removeEventListener('scroll', repositionActivePrompt, true);
+}
+
+let activeAnchor: Element | null = null;
+let activePlacement: 'below' | 'above' = 'below';
+
+function repositionActivePrompt(): void {
+  const prompt = document.getElementById(PROMPT_ID);
+  if (!prompt || !activeAnchor || !document.contains(activeAnchor)) {
+    return;
+  }
+  positionPromptNearAnchor(prompt, activeAnchor, activePlacement);
 }
 
 /**
  * Floating prompt shown after an Accepted submission.
  */
-export function showSubmitRatingPrompt(handlers: SubmitRatingHandlers): void {
+export function showSubmitRatingPrompt(handlers: SubmitRatingHandlers, options: SubmitRatingPromptOptions = {}): void {
   hideSubmitRatingPrompt();
 
   const t = getServiceTranslations();
   const isDark = isDarkMode();
   const colors = isDark ? THEME_COLORS.dark : THEME_COLORS.light;
+  activeAnchor = options.anchor ?? null;
+  activePlacement = options.placement ?? 'below';
 
   const prompt = document.createElement('div');
   prompt.id = PROMPT_ID;
@@ -32,11 +56,9 @@ export function showSubmitRatingPrompt(handlers: SubmitRatingHandlers): void {
   prompt.style.cssText = `
     ${CONTENT_UI_BASE}
     position: fixed;
-    right: 20px;
-    bottom: 84px;
     z-index: 2147483646;
-    width: 300px;
-    max-width: calc(100vw - 32px);
+    width: ${PROMPT_WIDTH}px;
+    max-width: calc(100vw - 24px);
     background-color: ${colors.bgSecondary};
     color: ${colors.textPrimary};
     border: 1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)'};
@@ -48,6 +70,12 @@ export function showSubmitRatingPrompt(handlers: SubmitRatingHandlers): void {
         : '0 12px 28px rgba(0, 0, 0, 0.16), 0 4px 10px rgba(0, 0, 0, 0.08)'
     };
   `;
+
+  // Fallback corner placement when no Submit button anchor is available
+  if (!activeAnchor) {
+    prompt.style.right = '20px';
+    prompt.style.bottom = '84px';
+  }
 
   const header = document.createElement('div');
   header.style.cssText =
@@ -170,6 +198,12 @@ export function showSubmitRatingPrompt(handlers: SubmitRatingHandlers): void {
   prompt.append(header, accent, ratings, addButton);
   document.body.appendChild(prompt);
 
+  if (activeAnchor) {
+    positionPromptNearAnchor(prompt, activeAnchor, activePlacement);
+    window.addEventListener('resize', repositionActivePrompt);
+    window.addEventListener('scroll', repositionActivePrompt, true);
+  }
+
   const onOutside = (event: MouseEvent) => {
     if (!prompt.contains(event.target as Node)) {
       hideSubmitRatingPrompt();
@@ -177,4 +211,40 @@ export function showSubmitRatingPrompt(handlers: SubmitRatingHandlers): void {
     }
   };
   setTimeout(() => document.addEventListener('click', onOutside), 0);
+}
+
+export function positionPromptNearAnchor(
+  prompt: HTMLElement,
+  anchor: Element,
+  placement: 'below' | 'above' = 'below'
+): void {
+  const rect = anchor.getBoundingClientRect();
+  const promptWidth = Math.min(PROMPT_WIDTH, window.innerWidth - VIEWPORT_GAP * 2);
+  const promptHeight = prompt.offsetHeight || 160;
+
+  // Align the prompt's right edge with the submit button's right edge
+  let left = rect.right - promptWidth;
+  left = Math.max(VIEWPORT_GAP, Math.min(left, window.innerWidth - promptWidth - VIEWPORT_GAP));
+
+  let top: number;
+  if (placement === 'below') {
+    top = rect.bottom + 8;
+    // If it would go off-screen, flip above the button
+    if (top + promptHeight > window.innerHeight - VIEWPORT_GAP) {
+      top = rect.top - promptHeight - 8;
+    }
+  } else {
+    top = rect.top - promptHeight - 8;
+    if (top < VIEWPORT_GAP) {
+      top = rect.bottom + 8;
+    }
+  }
+
+  top = Math.max(VIEWPORT_GAP, Math.min(top, window.innerHeight - promptHeight - VIEWPORT_GAP));
+
+  prompt.style.left = `${Math.round(left)}px`;
+  prompt.style.top = `${Math.round(top)}px`;
+  prompt.style.right = 'auto';
+  prompt.style.bottom = 'auto';
+  prompt.style.width = `${promptWidth}px`;
 }

@@ -6,6 +6,7 @@ import {
   isNeetcodeDomain,
   RatingMenu,
   setupLeetcodeAutoReset,
+  setupLeetcodeSubmitWatcher,
   setupNeetcodeSubmitWatcher,
   Tooltip,
 } from '@/utils/content';
@@ -23,16 +24,17 @@ export default defineContentScript({
       console.error('Failed to ping service worker:', error);
     }
 
+    const handlers = createCardActionHandlers();
+
     if (isNeetcodeDomain()) {
       setupNeetcodeSrsButton();
-      setupNeetcodeSubmitWatcher({
-        handlers: createCardActionHandlers(),
-      });
+      setupNeetcodeSubmitWatcher({ handlers });
       return;
     }
 
     setupLeetSrsButton();
     setupLeetcodeAutoReset();
+    setupLeetcodeSubmitWatcher({ handlers });
   },
 });
 
