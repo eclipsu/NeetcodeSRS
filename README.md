@@ -26,6 +26,16 @@ Rate a problem the moment you solve it. Submit (or use **Ctrl+Enter**), and Neet
 
 ---
 
+## Works on LeetCode
+
+Same flow on LeetCode — after **Accepted** (Submit or **Ctrl+Enter**), rate the problem to schedule your next review:
+
+<div align="center">
+<img src="assets/screenshots/leetcode_example.png" width="90%" alt="Rate difficulty after Accepted on LeetCode" />
+</div>
+
+---
+
 ## Extension UI
 
 <div align="center">
@@ -62,11 +72,11 @@ Optional private sync through your own GitHub Gist — your data stays in your a
 
 - **FSRS scheduling** via [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs)
 - **Rate on NeetCode** after Accepted (button click or Ctrl/Cmd+Enter / Ctrl+Space)
+- **Rate on LeetCode** after Accepted (Submit or Ctrl/Cmd+Enter)
 - **Daily review queue** with new-card limits and customizable day start hour
 - **Notes** on each card
 - **Dark / light** themes
 - **Import / export** backups
-- **LeetCode** support still included
 
 ---
 
