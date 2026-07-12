@@ -246,6 +246,8 @@ const pl: Translations = {
   // Content script (LeetCode page integration)
   contentScript: {
     addToSrsNoRating: 'Dodaj do SRS (bez oceny)',
+    rateAfterSubmit: 'Jak trudne to było?',
+    rateAfterSubmitHint: 'Oceń, aby zaplanować kolejną powtórkę',
   },
 
   // Formatting helpers (for interpolated strings)

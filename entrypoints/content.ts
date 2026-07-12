@@ -4,6 +4,7 @@ import {
   getCurrentDomain,
   RatingMenu,
   setupLeetcodeAutoReset,
+  setupLeetcodeSubmitWatcher,
   Tooltip,
 } from '@/utils/content';
 import { getServiceTranslations } from '@/services/i18n';
@@ -22,6 +23,9 @@ export default defineContentScript({
     }
     setupLeetSrsButton();
     setupLeetcodeAutoReset();
+    setupLeetcodeSubmitWatcher({
+      handlers: createCardActionHandlers(),
+    });
   },
 });
 
@@ -42,9 +46,44 @@ async function withProblemData<T>(
   }
 }
 
+function createCardActionHandlers() {
+  return {
+    onRate: async (rating: number, label: string) => {
+      await withProblemData(async (problemData) => {
+        const result = await sendMessage({
+          type: MessageType.RATE_CARD,
+          slug: problemData.titleSlug,
+          name: problemData.title,
+          rating: rating as Grade,
+          leetcodeId: problemData.questionFrontendId,
+          difficulty: problemData.difficulty,
+          domain: getCurrentDomain(),
+        });
+        console.log(`${label} - Card rated:`, result);
+        return result;
+      });
+    },
+    onAddWithoutRating: async () => {
+      await withProblemData(async (problemData) => {
+        const result = await sendMessage({
+          type: MessageType.ADD_CARD,
+          slug: problemData.titleSlug,
+          name: problemData.title,
+          leetcodeId: problemData.questionFrontendId,
+          difficulty: problemData.difficulty,
+          domain: getCurrentDomain(),
+        });
+        console.log('Add without rating - Card added:', result);
+        return result;
+      });
+    },
+  };
+}
+
 function setupLeetSrsButton() {
   const BUTTON_ID = 'leetsrs-button-wrapper';
   const tooltip = new Tooltip();
+  const handlers = createCardActionHandlers();
 
   function insertButton(buttonsContainer: Element) {
     // Don't insert if already present
@@ -64,34 +103,11 @@ function setupLeetSrsButton() {
     // Setup rating menu
     ratingMenu = new RatingMenu(
       buttonWrapper,
-      async (rating, label) => {
-        await withProblemData(async (problemData) => {
-          const result = await sendMessage({
-            type: MessageType.RATE_CARD,
-            slug: problemData.titleSlug,
-            name: problemData.title,
-            rating: rating as Grade,
-            leetcodeId: problemData.questionFrontendId,
-            difficulty: problemData.difficulty,
-            domain: getCurrentDomain(),
-          });
-          console.log(`${label} - Card rated:`, result);
-          return result;
-        });
+      (rating, label) => {
+        void handlers.onRate(rating, label);
       },
-      async () => {
-        await withProblemData(async (problemData) => {
-          const result = await sendMessage({
-            type: MessageType.ADD_CARD,
-            slug: problemData.titleSlug,
-            name: problemData.title,
-            leetcodeId: problemData.questionFrontendId,
-            difficulty: problemData.difficulty,
-            domain: getCurrentDomain(),
-          });
-          console.log('Add without rating - Card added:', result);
-          return result;
-        });
+      () => {
+        void handlers.onAddWithoutRating();
       }
     );
 

@@ -217,6 +217,8 @@ const zhCN: Translations = {
 
   contentScript: {
     addToSrsNoRating: '添加到 SRS（无评分）',
+    rateAfterSubmit: '这题有多难？',
+    rateAfterSubmitHint: '评分以安排下次复习',
   },
 
   format: {

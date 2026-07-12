@@ -222,6 +222,8 @@ const hi: Translations = {
   // Content script (LeetCode page integration)
   contentScript: {
     addToSrsNoRating: 'SRS में जोड़ें (बिना रेटिंग)',
+    rateAfterSubmit: 'यह कितना कठिन था?',
+    rateAfterSubmitHint: 'अगली रिव्यु शेड्यूल करने के लिए रेट करें',
   },
   // Formatting helpers (for interpolated strings)
   format: {

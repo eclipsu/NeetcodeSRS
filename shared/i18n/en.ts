@@ -244,6 +244,8 @@ const en = {
   // Content script (LeetCode page integration)
   contentScript: {
     addToSrsNoRating: 'Add to SRS (no rating)',
+    rateAfterSubmit: 'How hard was this?',
+    rateAfterSubmitHint: 'Rate to schedule your next review',
   },
 
   // Formatting helpers (for interpolated strings)
