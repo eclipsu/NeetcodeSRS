@@ -82,7 +82,22 @@ Optional private sync through your own GitHub Gist — your data stays in your a
 
 ## Install
 
-Build from source and load as an unpacked extension:
+### From a GitHub Release (easiest)
+
+1. Open the latest [Release](https://github.com/eclipsu/NeetcodeSRS/releases)
+2. Download the extension **`.zip`**
+3. Unzip it somewhere permanent (Chrome needs the folder to stay there)
+4. Open Chrome → `chrome://extensions`
+5. Turn on **Developer mode** (top right)
+6. Click **Load unpacked**
+7. Select the unzipped folder (the one that contains `manifest.json`)
+8. Pin NeetcodeSRS, then try it on [NeetCode](https://neetcode.io) or [LeetCode](https://leetcode.com) — after **Accepted**, rate how hard it was
+
+To update later: download the new zip, replace the old folder (or load the new one), then click **Reload** on `chrome://extensions`.
+
+> Chrome may show a developer-extension warning. That’s expected for installs outside the Chrome Web Store.
+
+### Build from source
 
 ```bash
 npm install
@@ -93,7 +108,15 @@ npm run build
 2. Enable **Developer mode**
 3. Click **Load unpacked** and select `.output/chrome-mv3`
 
-For local development:
+To make a release zip yourself:
+
+```bash
+npm run zip
+```
+
+The zip is written under `.output/` — attach that file to a GitHub Release.
+
+### Local development
 
 ```bash
 npm run dev
