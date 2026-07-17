@@ -164,7 +164,8 @@ const en = {
 
     problemAutoClear: {
       title: 'Problem Auto Reset',
-      description: 'Automatically reset code when opening a LeetCode problem.',
+      description:
+        'Automatically reset code when opening a LeetCode problem. Links opened from NeetcodeSRS always start with a clean editor.',
       enableAutoReset: 'Enable auto reset',
     },
 

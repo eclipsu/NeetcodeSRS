@@ -7,6 +7,7 @@ import {
   RatingMenu,
   setupLeetcodeAutoReset,
   setupLeetcodeSubmitWatcher,
+  setupNeetcodeAutoReset,
   setupNeetcodeSubmitWatcher,
   Tooltip,
 } from '@/utils/content';
@@ -28,6 +29,7 @@ export default defineContentScript({
 
     if (isNeetcodeDomain()) {
       setupNeetcodeSrsButton();
+      setupNeetcodeAutoReset();
       setupNeetcodeSubmitWatcher({ handlers });
       return;
     }

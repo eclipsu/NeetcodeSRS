@@ -2,6 +2,7 @@ export * from './auto-reset';
 export * from './button';
 export * from './constants';
 export * from './domain';
+export * from './fresh-open';
 export * from './leetcode-submit-watcher';
 export * from './neetcode-submit-watcher';
 export * from './problem-data';

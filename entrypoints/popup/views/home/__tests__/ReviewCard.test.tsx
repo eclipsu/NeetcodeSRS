@@ -71,7 +71,7 @@ describe('ReviewCard', () => {
     it('should render the external link to NeetCode problem', () => {
       renderWithProviders();
       const link = screen.getByRole('link', { name: /NeetCode/i });
-      expect(link).toHaveAttribute('href', 'https://neetcode.io/problems/two-sum');
+      expect(link).toHaveAttribute('href', 'https://neetcode.io/problems/two-sum?neetcodesrs_fresh=1');
       expect(link).toHaveAttribute('target', '_blank');
       expect(link).toHaveAttribute('rel', 'noopener noreferrer');
     });
@@ -84,7 +84,7 @@ describe('ReviewCard', () => {
         domain: 'leetcode.com',
       });
       const link = screen.getByRole('link', { name: /NeetCode/i });
-      expect(link).toHaveAttribute('href', 'https://neetcode.io/problems/two-integer-sum');
+      expect(link).toHaveAttribute('href', 'https://neetcode.io/problems/two-integer-sum?neetcodesrs_fresh=1');
     });
 
     it('should render all four rating buttons', () => {
@@ -201,7 +201,10 @@ describe('ReviewCard', () => {
       renderWithProviders(specialCard);
 
       const link = screen.getByRole('link', { name: /NeetCode/i });
-      expect(link).toHaveAttribute('href', 'https://neetcode.io/problems/problem-with-special_chars-123');
+      expect(link).toHaveAttribute(
+        'href',
+        'https://neetcode.io/problems/problem-with-special_chars-123?neetcodesrs_fresh=1'
+      );
     });
   });
 
